@@ -117,7 +117,7 @@ def test_huggingface():
             return jsonify({"error": "Hugging Face token not configured"}), 500
         
         headers = {"Authorization": f"Bearer {HF_TOKEN}"}
-        response = requests.get("https://api-inference.huggingface.co/models/cagliostrolab/animagine-xl-3.1", headers=headers, timeout=10)
+        response = requests.get("https://api-inference.huggingface.co/models/timbrooks/instruct-pix2pix", headers=headers, timeout=10)
         
         return jsonify({
             "status": "success",
