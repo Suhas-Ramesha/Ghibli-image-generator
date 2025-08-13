@@ -44,7 +44,7 @@ function App() {
       const formData = new FormData()
       formData.append('image', selectedImage.file)
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/ghibli/convert`, {
+      const response = await fetch(`https://ghibli-backend-l3qt.onrender.com/api/ghibli/convert`, {
         method: 'POST',
         body: formData
       })
