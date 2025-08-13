@@ -9,22 +9,29 @@ from flask_cors import cross_origin
 ghibli_bp = Blueprint('ghibli', __name__)
 
 # Hugging Face API configuration
-HF_API_URL = "https://api-inference.huggingface.co/models/cagliostrolab/animagine-xl-3.1"
+HF_API_URL = "https://api-inference.huggingface.co/models/timbrooks/instruct-pix2pix"
 HF_TOKEN = os.getenv('HUGGINGFACE_TOKEN')  # You'll need to set this environment variable
 
 def query_huggingface(image_data):
     """Query Hugging Face API for Ghibli style conversion"""
     headers = {"Authorization": f"Bearer {HF_TOKEN}"}
     
-    # For now, let's use a simple text-to-image approach with a Ghibli-style prompt
-    # In a real implementation, you'd want to use an image-to-image model
-    payload = {
-        "inputs": "Studio Ghibli style, beautiful landscape, anime art style, high quality, detailed"
-    }
-    
     try:
         print(f"Calling Hugging Face API: {HF_API_URL}")
-        response = requests.post(HF_API_URL, headers=headers, json=payload, timeout=60)
+        
+        # InstructPix2Pix expects a JSON payload with image and instruction
+        # Convert image to base64 for JSON payload
+        import base64
+        image_base64 = base64.b64encode(image_data).decode('utf-8')
+        
+        payload = {
+            "inputs": {
+                "image": f"data:image/jpeg;base64,{image_base64}",
+                "instruction": "Convert this image to Studio Ghibli anime style with beautiful colors and detailed artwork"
+            }
+        }
+        
+        response = requests.post(HF_API_URL, headers=headers, json=payload, timeout=120)
         print(f"Hugging Face API Response Status: {response.status_code}")
         
         if response.status_code == 200:
